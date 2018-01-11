@@ -3,6 +3,7 @@ import time
 import aiml
 import os, sys
 import json
+import urllib
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse
@@ -11,7 +12,7 @@ from QA.Tools import Html_Tools as QAT
 from QA.Tools import TextProcess as T
 from QA.QACrawler import search_summary
 
-HOST_NAME = 'localhost'
+HOST_NAME = '0.0.0.0'
 PORT_NUMBER = 9000
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -36,13 +37,13 @@ class MyHandler(BaseHTTPRequestHandler):
         self.end_headers()
         query = urlparse(self.path).query
         query_components = dict(qc.split("=") for qc in query.split("&"))
-        question = query_components["q"]
+        question = urllib.unquote(query_components["q"])
         try:
           content = [ans for ans in answer(question)]
         except Exception as e:
           content = [e.message]
 
-        return json.dumps(content, ensure_ascii=False)
+        return json.dumps(content, ensure_ascii=True)
 
     def respond(self, opts):
         response = self.handle_http(opts['status'], self.path)

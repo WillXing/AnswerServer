@@ -1,0 +1,5 @@
+aiml
+jieba
+lxml
+beautifulsoup4
+requests
